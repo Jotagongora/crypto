@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_DATABASE: crypto_bot
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    container_name: crypto
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../crypto_bot:/crypto_bot
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 3306
+      DJANGO_DB_NAME: crypto_bot
+      DJANGO_DB_USER: root
+      DJANGO_DB_PASSWORD:
+
+volumes:
+  mysql_data:
